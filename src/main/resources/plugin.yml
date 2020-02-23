@@ -1,0 +1,9 @@
+name: CommandHelper
+version: ${project.version}
+main: net.testusuke.commandhelper.CommandHelper
+api-version: 1.13
+author: [testusuke]
+commands:
+  cmdhelp:
+    permission: commandhelper.general
+
