@@ -1,6 +1,8 @@
 package net.testusuke.commandhelper.Event;
 
 import net.testusuke.commandhelper.CommandHelper;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -25,4 +27,9 @@ public class HelperEvent implements Listener {
     }
 
 
+    private void executeCommand(Player player, String command){
+
+        //  execute
+        Bukkit.dispatchCommand(player, command);
+    }
 }

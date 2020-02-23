@@ -1,0 +1,7 @@
+mysql:
+  host: "host-ip"
+  user: "root"
+  pass: "password"
+  port: "3188"
+  db: "database"
+prefix: "&e[&aCommand&dHelper&e]&f"
