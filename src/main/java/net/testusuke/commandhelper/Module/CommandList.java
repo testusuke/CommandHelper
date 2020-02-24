@@ -3,6 +3,9 @@ package net.testusuke.commandhelper.Module;
 import net.testusuke.commandhelper.CommandHelper;
 import org.bukkit.entity.Player;
 
+import java.sql.ResultSet;
+import java.util.UUID;
+
 public class CommandList {
 
     private final CommandHelper plugin;
@@ -68,6 +71,18 @@ public class CommandList {
     ////////////////////////////////////////////////////
     //////////  データベース系の操作メソッド  //////////
     ////////////////////////////////////////////////////
+
+    //  コマンドの存在
+    public boolean checkCommand(Player player, String command){
+        boolean b = false;
+
+        UUID uuid = player.getUniqueId();
+
+        String sql = "SELECT * FROM `` WHERE `uuid` = `" + uuid + "`  AND `command` = `" + command + "`;";
+        ResultSet rs = plugin.mysql.query(sql);
+
+        return b;
+    }
 
     //  コマンド追加
     public void addCommandToDB(Player player, String command){

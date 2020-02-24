@@ -22,6 +22,7 @@ public class ChatEvent implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event){
         Player player = event.getPlayer();
+        String command = event.getMessage();
 
         if(!plugin.prepareCommandPlayer.containsKey(player)){
             return;
@@ -32,14 +33,22 @@ public class ChatEvent implements Listener {
 
         if(mode == "add"){
 
+            plugin.cl.addCommandToDB(player, command);
 
             plugin.cl.removeMode(player);
+            player.sendMessage(plugin.prefix + "§aコマンドを追加しました。コマンド: " + command);
+
+            return;
         }
 
         if(mode == "remove"){
 
+            plugin.cl.removeCommandFromDB(player, command);
 
             plugin.cl.removeMode(player);
+            player.sendMessage(plugin.prefix + "§cコマンドを削除しました。コマンド: " + command);
+
+            return;
         }
 
     }
