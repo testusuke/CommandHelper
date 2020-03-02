@@ -24,14 +24,12 @@ public class ChatEvent implements Listener {
         Player player = event.getPlayer();
         String command = event.getMessage();
 
-        if(!plugin.prepareCommandPlayer.containsKey(player)){
+        if(!plugin.addCommandPlayer.containsKey(player)){
             return;
         }
 
-        String mode = plugin.cl.getPlayerMode(player);
-        if(mode == "no"){return;}
-
-        if(mode == "add"){
+        boolean mode = plugin.addCommandPlayer.get(player);
+        if(mode){
 
             plugin.cl.addCommandToDB(player, command);
 
@@ -40,16 +38,5 @@ public class ChatEvent implements Listener {
 
             return;
         }
-
-        if(mode == "remove"){
-
-            plugin.cl.removeCommandFromDB(player, command);
-
-            plugin.cl.removeMode(player);
-            player.sendMessage(plugin.prefix + "§cコマンドを削除しました。コマンド: " + command);
-
-            return;
-        }
-
     }
 }

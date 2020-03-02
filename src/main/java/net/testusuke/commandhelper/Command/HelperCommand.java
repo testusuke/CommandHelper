@@ -2,7 +2,6 @@ package net.testusuke.commandhelper.Command;
 
 import net.testusuke.commandhelper.CommandHelper;
 import org.bukkit.ChatColor;
-import org.bukkit.boss.BarFlag;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -52,9 +51,10 @@ public class HelperCommand implements CommandExecutor {
             }
 
             if(args[0].equalsIgnoreCase("remove")){
-                prepareRemoveCommand(player);
 
-                player.sendMessage(plugin.prefix + "§e削除したいコマンドを[ / ]を付けないで入力してください。");
+                player.sendMessage(plugin.prefix + "§e削除用のGUIを開きます。削除したいコマンドをクリックして下さい");
+
+
                 return true;
             }
         }
@@ -68,17 +68,13 @@ public class HelperCommand implements CommandExecutor {
         player.sendMessage("§e/cmdhelp <-登録しているコマンド一覧表示");
         player.sendMessage("§e/cmdhelp help <-ヘルプの表示");
         player.sendMessage("§e/cmdhelp add <-コマンドを追加する。§e§lコマンド実行後に[ / ]を省略した追加したいコマンドをチャットに入力してください");
-        player.sendMessage("§e/cmdhelp remove <-コマンドを削除する。§e§lコマンド実行後に[ / ]を省略した削除したいコマンドを入力してください。");
+        player.sendMessage("§e/cmdhelp remove <-コマンド削除用のGUIを開きます。");
         player.sendMessage("§d§lCreated by testusuke Version: " + plugin.version);
         player.sendMessage("§e§l===================================");
     }
 
     private void prepareAddCommand(Player player){
-        plugin.cl.setMode(player, "add");
-    }
-
-    private void prepareRemoveCommand(Player player){
-        plugin.cl.setMode(player, "remove");
+        plugin.cl.setMode(player, true);
     }
 
 }

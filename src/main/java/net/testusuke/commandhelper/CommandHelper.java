@@ -37,17 +37,18 @@ public final class CommandHelper extends JavaPlugin {
     /////////////////////////////////////////////
     //  チャットでのコマンド追加・削除用変数  //
     ////////////////////////////////////////////
-    //  PrepareCommandPlayer add/remove
-    public HashMap<Player,String> prepareCommandPlayer = new HashMap<>();
+    //  CommandPlayer add
+    public HashMap<Player,Boolean> addCommandPlayer = new HashMap<>();
 
-    //  CommandListClass
+    //  CommandListClass    //  コマンドの実行
     public CommandList cl = null;
 
     ///////////////////////////
-    //  コマンド実行系変数   //
+    //  コマンド系変数   //
     ///////////////////////////
     //  OpenGuiClass
     public OpenGui openGui = null;
+
 
 
     @Override
@@ -108,12 +109,17 @@ public final class CommandHelper extends JavaPlugin {
     //////////////////////////
     //  CommandListTable    //
     //////////////////////////
-    private String sqlCommandList = "";
+    private String sqlCommandList = "CREATE TABLE `cmdhelper_list` (\n" +
+            "  id INT NULL AUTO_INCREMENT,\n" +
+            "  uuid VARCHAR(36) NULL DEFAULT NULL,\n" +
+            "  name VARCHAR(16) NULL DEFAULT NULL,\n" +
+            "  command VARCHAR(256) NOT NULL,\n" +
+            "  PRIMARY KEY (id));";
 
     private void createTable(){
         mysql.execute(sqlCommandList);
 
-        getServer().getLogger().info("Create Table!");
+        getServer().getLogger().info("Create Table.");
     }
 
 }
