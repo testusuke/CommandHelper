@@ -72,6 +72,8 @@ public class OpenGui {
                     item_pageIndex.setItemMeta(meta_pageIndex);
                     inv.setItem(49,item_nextPage);
 
+                    player.openInventory(inv);
+
                     //  DBの処理
                     rs.close();
 
