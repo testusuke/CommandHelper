@@ -1,7 +1,7 @@
 mysql:
-  host: "host-ip"
+  host: "localhost"
   user: "root"
   pass: "password"
-  port: "3188"
+  port: "3306"
   db: "database"
 prefix: "&e[&aCommand&dHelper&e]&f"

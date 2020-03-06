@@ -30,7 +30,8 @@ public class HelperCommand implements CommandExecutor {
         if(args.length == 0){
             Player player = (Player)sender;
 
-
+            player.sendMessage(plugin.prefix + "§eコマンドリストを開きます。");
+            plugin.openGui.OpenGui(player,1);
             return true;
         }
 
@@ -53,7 +54,6 @@ public class HelperCommand implements CommandExecutor {
             if(args[0].equalsIgnoreCase("remove")){
 
                 player.sendMessage(plugin.prefix + "§e削除用のGUIを開きます。削除したいコマンドをクリックして下さい");
-
 
                 return true;
             }

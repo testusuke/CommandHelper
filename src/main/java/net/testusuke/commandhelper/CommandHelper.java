@@ -110,7 +110,7 @@ public final class CommandHelper extends JavaPlugin {
     //  CommandListTable    //
     //////////////////////////
     private String sqlCommandList = "CREATE TABLE `cmdhelper_list` (\n" +
-            "  id INT NULL AUTO_INCREMENT,\n" +
+            "  id INT unsigned NOT NULL AUTO_INCREMENT,\n" +
             "  uuid VARCHAR(36) NULL DEFAULT NULL,\n" +
             "  name VARCHAR(16) NULL DEFAULT NULL,\n" +
             "  command VARCHAR(256) NOT NULL,\n" +

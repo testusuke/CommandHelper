@@ -1,9 +1,9 @@
 package net.testusuke.commandhelper.Module;
 
 import net.testusuke.commandhelper.CommandHelper;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.sql.ResultSet;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class CommandList {
 
@@ -71,41 +71,51 @@ public class CommandList {
     //////////  データベース系の操作メソッド  //////////
     ////////////////////////////////////////////////////
 
-    //  コマンドの存在
-    public boolean existCommand(Player player, String command){
-        boolean b = false;
-
-        String uuid = player.getUniqueId().toString();
-
-        String sql = "SELECT * FROM cmdhelper_list WHERE uuid = '" + uuid + "'  AND command = '" + command + "';";
-        ResultSet rs = plugin.mysql.query(sql);
-
-
-
-        return b;
-    }
-
     //  コマンド追加
     public void addCommandToDB(Player player, String command){
 
-        String uuid = player.getUniqueId().toString();
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                boolean b = false;
+                String uuid = player.getUniqueId().toString();
 
-        String sql = "INSERT INTO cmdhelper_list(uuid,name,command) VALUES('" + uuid +  "','" + player.getName() + "','" + command + "'); ";
-        //  mysql
-        plugin.mysql.execute(sql);
+                String sql = "INSERT INTO cmdhelper_list (uuid,name,command) VALUES ('" + uuid +  "','" + player.getName() + "','" + command + "'); ";
+                //  mysql
+               b = plugin.mysql.execute(sql);
+                if(b){
+                    //  Message
+                    player.sendMessage(plugin.prefix + "§aコマンドを追加しました。command: " + command);
+                    Bukkit.getLogger().info("Add command player: " + player.getName() + " command: " + command);
+                }else {
+                    //  Message
+                    player.sendMessage(plugin.prefix + "§c§lコマンドの追加に失敗しました。command: " + command);
+
+                }
+            }
+        }.runTaskAsynchronously(this.plugin);
 
     }
 
     //  コマンド削除
-    public boolean removeCommandFromDB(Player player, String id){
-        boolean b = false;
-        String uuid = player.getUniqueId().toString();
+    public void removeCommandFromDB(Player player, String id){
 
-        String sql = "DELETE FROM cmdhelper_list WHERE id = '" + id +  "' AND uuid = '" + uuid + "';";
-        //  mysql
-        b = plugin.mysql.execute(sql);
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                boolean b = false;
+                String uuid = player.getUniqueId().toString();
 
-        return b;
+                String sql = "DELETE FROM cmdhelper_list WHERE id = '" + id +  "' AND uuid = '" + uuid + "';";
+                //  mysql
+                b = plugin.mysql.execute(sql);
+                if(b){
+                    player.sendMessage(plugin.prefix + "§aコマンドを削除しました。");
+                }else {
+                    player.sendMessage(plugin.prefix + "§c§lコマンドの削除に失敗しました。");
+                }
+            }
+        }.runTaskAsynchronously(this.plugin);
     }
 
 }

@@ -30,11 +30,9 @@ public class ChatEvent implements Listener {
 
         boolean mode = plugin.addCommandPlayer.get(player);
         if(mode){
-
+            //  DB
             plugin.cl.addCommandToDB(player, command);
-
             plugin.cl.removeMode(player);
-            player.sendMessage(plugin.prefix + "§aコマンドを追加しました。コマンド: " + command);
 
             return;
         }
