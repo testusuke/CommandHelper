@@ -51,7 +51,7 @@ public final class CommandHelper extends JavaPlugin {
     public OpenGui openGui = null;
 
     /////////////////////////////
-    //  スレッドフリーのクラス //
+    //  スレッドセーフのクラス //
     /////////////////////////////
     //  CommandListData
     public CommandListData commandListData = null;
