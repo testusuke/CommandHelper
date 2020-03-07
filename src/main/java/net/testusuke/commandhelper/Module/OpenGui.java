@@ -41,17 +41,16 @@ public class OpenGui {
                     if(rs == null){
                         player.sendMessage(plugin.prefix + "§cコマンドリストが存在しませんでした。§a/cmdhelp add でコマンドを追加しましょう。");
                         rs.close();
+                    }else {
+                        int count = 0;
+                        while (rs.next()) {
+                            String command = rs.getString("command");
+                            int id = rs.getInt("id");
+                            ItemStack item = createItemAboutAdd(command, id);
+                            inv.setItem(count, item);
+                            count++;
+                        }
                     }
-
-                    int count = 0;
-                    while (rs.next()) {
-                        String command = rs.getString("command");
-                        int id = rs.getInt("id");
-                        ItemStack item = createItemAboutAdd(command,id);
-                        inv.setItem(count,item);
-                        count++;
-                    }
-
                     //  ページ切り替え、ページ数のアイテムの設置
                     //  次のページ
                     ItemStack item_nextPage = new ItemStack(Material.SUNFLOWER);

@@ -1,6 +1,7 @@
 package net.testusuke.commandhelper;
 
 import net.testusuke.commandhelper.Command.HelperCommand;
+import net.testusuke.commandhelper.Data.CommandListData;
 import net.testusuke.commandhelper.Event.ChatEvent;
 import net.testusuke.commandhelper.Event.HelperEvent;
 import net.testusuke.commandhelper.Manager.MySQLManager;
@@ -43,12 +44,17 @@ public final class CommandHelper extends JavaPlugin {
     //  CommandListClass    //  コマンドの実行
     public CommandList cl = null;
 
-    ///////////////////////////
+    ///////////////////////
     //  コマンド系変数   //
-    ///////////////////////////
+    ///////////////////////
     //  OpenGuiClass
     public OpenGui openGui = null;
 
+    /////////////////////////////
+    //  スレッドフリーのクラス //
+    /////////////////////////////
+    //  CommandListData
+    public CommandListData commandListData = null;
 
 
     @Override
@@ -81,7 +87,7 @@ public final class CommandHelper extends JavaPlugin {
         //  Class
         cl = new CommandList(this);
         openGui = new OpenGui(this);
-
+        commandListData = new CommandListData(this);
 
     }
 

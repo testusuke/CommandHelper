@@ -34,6 +34,7 @@ public class ChatEvent implements Listener {
             plugin.cl.addCommandToDB(player, command);
             plugin.cl.removeMode(player);
 
+            event.setCancelled(true);
             return;
         }
     }
