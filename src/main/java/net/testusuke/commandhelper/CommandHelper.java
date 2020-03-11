@@ -74,6 +74,7 @@ public final class CommandHelper extends JavaPlugin {
         //  Event
         getServer().getPluginManager().registerEvents(new HelperEvent(this), this);
         getServer().getPluginManager().registerEvents(new ChatEvent(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
 
         //  loadPrefix
         loadPrefix();
