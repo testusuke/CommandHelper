@@ -1,9 +1,7 @@
 package net.testusuke.commandhelper.Module;
 
 import net.testusuke.commandhelper.CommandHelper;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class CommandList {
 
@@ -66,6 +64,8 @@ public class CommandList {
         return;
     }
 
+    //  コマンド実行時に毎回DBアクセスしていたのをログイン、ログアウトの時だけで処理をする方針に変わったため、以下のメソッドが不要になった
+    /*
 
     ////////////////////////////////////////////////////
     //////////  データベース系の操作メソッド  //////////
@@ -117,5 +117,6 @@ public class CommandList {
             }
         }.runTaskAsynchronously(this.plugin);
     }
+    */
 
 }

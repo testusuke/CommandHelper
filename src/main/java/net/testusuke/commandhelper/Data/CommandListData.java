@@ -340,7 +340,6 @@ public class CommandListData {
             for(String command : list){
                 String sql = "INSERT INTO cmdhelper_list (uuid,name,command) VALUES ('" + uuid +  "','" + player.getName() + "','" + command + "'); ";
                 mysql.execute(sql);
-                mysql.close();
             }
 
             removePlayerAddCommandList(player);
@@ -352,7 +351,6 @@ public class CommandListData {
             for(int id : list){
                 String sql = "DELETE FROM cmdhelper_list WHERE id = '" + id +  "' AND uuid = '" + uuid + "';";
                 mysql.execute(sql);
-                mysql.close();
             }
 
             removePlayerRemoveCommandList(player);

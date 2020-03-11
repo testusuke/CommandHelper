@@ -31,7 +31,7 @@ public class ChatEvent implements Listener {
         boolean mode = plugin.addCommandPlayer.get(player);
         if(mode){
             //  DB
-            plugin.cl.addCommandToDB(player, command);
+            plugin.commandListData.addCommand(player,command);
             plugin.cl.removeMode(player);
 
             event.setCancelled(true);

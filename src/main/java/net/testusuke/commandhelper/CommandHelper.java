@@ -4,6 +4,7 @@ import net.testusuke.commandhelper.Command.HelperCommand;
 import net.testusuke.commandhelper.Data.CommandListData;
 import net.testusuke.commandhelper.Event.ChatEvent;
 import net.testusuke.commandhelper.Event.HelperEvent;
+import net.testusuke.commandhelper.Event.PlayerEvent;
 import net.testusuke.commandhelper.Manager.MySQLManager;
 import net.testusuke.commandhelper.Module.CommandList;
 import net.testusuke.commandhelper.Module.OpenGui;
@@ -90,14 +91,21 @@ public final class CommandHelper extends JavaPlugin {
         openGui = new OpenGui(this);
         commandListData = new CommandListData(this);
 
+        //  コマンドリストのロード
+        commandListData.loadCommandListWhenOnEnable();
+
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        //  Logger
+        getLogger().info("onDisable");
 
         //  Remove All Player Mode
         cl.removeAllPlayerMode();
+        //  コマンドリスト更新の適応
+        commandListData.writeCommandListWhenOnDisable();
 
     }
 

@@ -52,8 +52,8 @@ public class HelperCommand implements CommandExecutor {
             }
 
             if(args[0].equalsIgnoreCase("remove")){
-
                 player.sendMessage(plugin.prefix + "§e削除用のGUIを開きます。削除したいコマンドをクリックして下さい");
+                plugin.openGui.OpenRemoveGui(player, 1);
 
                 return true;
             }

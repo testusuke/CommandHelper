@@ -74,6 +74,59 @@ public class HelperEvent implements Listener {
 
         }
 
+
+        ////////////////////////////////////////////////
+        //  コマンド削除用GUI
+        ////////////////////////////////////////////////
+        if(event.getView().getTitle().equalsIgnoreCase(plugin.prefix + "§c§lコマンド削除用GUI")){
+            event.setCancelled(true);
+
+            //  アイテムが黄緑色の羊毛か
+            if(item.getType() == Material.RED_WOOL){
+                try {
+                    String command = item.getItemMeta().getDisplayName();
+                    player.sendMessage(plugin.prefix + "§aコマンドを削除します。command: " + command);
+                    //  コマンドの削除
+                    //  id取得
+                    String id_before = item.getItemMeta().getLore().get(0);
+                    int id = Integer.parseInt(id_before);
+
+                    plugin.commandListData.removerCommand(player, id);
+
+                }catch (NullPointerException e){
+                    //e.printStackTrace();
+                    player.sendMessage(plugin.prefix + "§c§l無効な選択です。Error: NullPointerException Where: ClickEvent");
+                }
+
+            }
+
+            //  ページ
+            if(item.getType() == Material.SUNFLOWER){
+                //  つぎのページ
+                if(item.getItemMeta().getDisplayName().equalsIgnoreCase("§e次のページ")){
+                    if(inventory.getItem(44).getType() == Material.AIR || inventory.getItem(44) == null){
+                        player.sendMessage(plugin.prefix + "§c次のページが存在しません。");
+                        return;
+                    }
+                    player.sendMessage(plugin.prefix + "§a次のページを開きます。");
+                    int page = getPage(inventory);
+                    page++;
+                    plugin.openGui.OpenGui(player, page);
+
+                }
+                //  前のページ
+                if(item.getItemMeta().getDisplayName().equalsIgnoreCase("§e前のページ")){
+                    int page = getPage(inventory);
+                    if(page <= 1){
+                        return;
+                    }
+                    page--;
+                    plugin.openGui.OpenGui(player,page);
+                }
+            }
+
+        }
+
     }
 
     private int getPage(Inventory inventory){
