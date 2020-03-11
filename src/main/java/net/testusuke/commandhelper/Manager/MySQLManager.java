@@ -178,5 +178,16 @@ public class MySQLManager {
         return rs;
     }
 
+    public void close(){
+
+        try {
+            this.st.close();
+            this.con.close();
+            this.MySQL.close(this.con);
+
+        }catch (SQLException var4){
+        }
+
+    }
 
 }
