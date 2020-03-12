@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 
 public class HelperCommand implements CommandExecutor {
@@ -45,9 +46,21 @@ public class HelperCommand implements CommandExecutor {
             }
 
             if(args[0].equalsIgnoreCase("add")){
-                prepareAddCommand(player);
+                String commands = getCommandFromStrings(args);
+                if(commands == null){
+                    player.sendMessage(plugin.prefix + "§c§l無効な使用方法です。/cmdhelp help を参照してください。");
+                    return false;
+                }
+                //  追加
+                new BukkitRunnable(){
+                    @Override
+                    public void run(){
+                        plugin.commandListData.addCommand(player,commands);
 
-                player.sendMessage(plugin.prefix + "§e追加したいコマンドを[ / ]を付けないで入力してください。");
+                    }
+                }.runTaskAsynchronously(plugin);
+                //prepareAddCommand(player);
+                //player.sendMessage(plugin.prefix + "§e追加したいコマンドを[ / ]を付けないで入力してください。");
                 return true;
             }
 
@@ -67,7 +80,7 @@ public class HelperCommand implements CommandExecutor {
         player.sendMessage("§e§l===================================");
         player.sendMessage("§e/cmdhelp <-登録しているコマンド一覧表示");
         player.sendMessage("§e/cmdhelp help <-ヘルプの表示");
-        player.sendMessage("§e/cmdhelp add <-コマンドを追加する。§e§lコマンド実行後に[ / ]を省略した追加したいコマンドをチャットに入力してください");
+        player.sendMessage("§e/cmdhelp add (command) <-コマンドを追加する。§e§lコマンドの後に続けて追加したいコマンド§d§l[ / ]§e§lを入力してください");
         player.sendMessage("§e/cmdhelp remove <-コマンド削除用のGUIを開きます。");
         player.sendMessage("§d§lCreated by testusuke Version: " + plugin.version);
         player.sendMessage("§e§l===================================");
@@ -75,6 +88,25 @@ public class HelperCommand implements CommandExecutor {
 
     private void prepareAddCommand(Player player){
         plugin.cl.setMode(player, true);
+    }
+
+    private static String getCommandFromStrings(String[] command){
+        //String[] command = command.split(" ");
+        String encode_command = null;
+        int i = 0;
+        for(String s : command){
+            if(i <= 1){
+                i++;
+                continue;
+            }
+            if(encode_command == null){
+                encode_command = s;
+            }else {
+                encode_command += " " + s;
+            }
+            i++;
+        }
+        return encode_command;
     }
 
 }
