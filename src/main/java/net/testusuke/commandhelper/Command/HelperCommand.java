@@ -59,7 +59,7 @@ public class HelperCommand implements CommandExecutor {
                 player.sendMessage(plugin.prefix + "§c§l無効な使用方法です。/cmdhelp help を参照してください。");
                 return false;
             }
-            player.sendMessage(commands);
+
             plugin.commandListData.addCommand(player, commands);
 
             //prepareAddCommand(player);

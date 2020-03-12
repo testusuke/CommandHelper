@@ -35,12 +35,13 @@ public class OpenGui {
             int count = 0;
             for(Integer id : map.keySet()){
                 if(count < index){
+                    count++;
                     continue;
                 }
                 String command = map.get(id);
                 ItemStack item = createItemAboutAdd(command, id);
                 inv.setItem(count - index, item);
-                if(count >=44){
+                if(count >=44+index){
                     break;
                 }
                 count++;
@@ -64,7 +65,7 @@ public class OpenGui {
         ItemMeta meta_pageIndex = item_pageIndex.getItemMeta();
         meta_pageIndex.setDisplayName("§aページ数");
         ArrayList<String> lore = new ArrayList<>();
-        lore.add("" + page);
+        lore.add(page + "");
         meta_pageIndex.setLore(lore);
         item_pageIndex.setItemMeta(meta_pageIndex);
         inv.setItem(49, item_pageIndex);
@@ -102,13 +103,14 @@ public class OpenGui {
             int count = 0;
             for(Integer id : map.keySet()){
                 if(count < index){
+                    count++;
                     continue;
                 }
                 String command = map.get(id);
                 ItemStack item = createItemAboutRemove(command, id);
                 inv.setItem(count - index, item);
 
-                if(count >=44){
+                if(count >= 44 + index){
                     break;
                 }
                 count++;

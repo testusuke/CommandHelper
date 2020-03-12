@@ -9,6 +9,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 public class HelperEvent implements Listener {
 
@@ -61,6 +64,7 @@ public class HelperEvent implements Listener {
                     player.sendMessage(plugin.prefix + "§a次のページを開きます。");
                     int page = getPage(inventory);
                     page++;
+                    player.closeInventory();
                     plugin.openGui.OpenGui(player, page);
 
                 }
@@ -71,6 +75,7 @@ public class HelperEvent implements Listener {
                         return;
                     }
                     page--;
+                    player.closeInventory();
                     plugin.openGui.OpenGui(player,page);
                 }
             }
@@ -117,7 +122,8 @@ public class HelperEvent implements Listener {
                     player.sendMessage(plugin.prefix + "§a次のページを開きます。");
                     int page = getPage(inventory);
                     page++;
-                    plugin.openGui.OpenGui(player, page);
+                    player.closeInventory();
+                    plugin.openGui.OpenRemoveGui(player, page);
 
                 }
                 //  前のページ
@@ -127,7 +133,8 @@ public class HelperEvent implements Listener {
                         return;
                     }
                     page--;
-                    plugin.openGui.OpenGui(player,page);
+                    player.closeInventory();
+                    plugin.openGui.OpenRemoveGui(player,page);
                 }
             }
 
@@ -135,20 +142,20 @@ public class HelperEvent implements Listener {
 
     }
 
-    private int getPage(Inventory inventory){
+    private int getPage(Inventory inventory) {
         int i = 0;
 
         ItemStack item_49 = inventory.getItem(49);
-        if(item_49.getType() == Material.BOOK){
-            try {
-                String page = item_49.getItemMeta().getLore().get(0);
-                i = Integer.getInteger(page);
-            }catch (NullPointerException e) {
-                return i;
-            }
+        try {
+            ItemMeta meta = item_49.getItemMeta();
+            List<String> list = meta.getLore();
+            String page = list.get(0);
+            i = Integer.parseInt(page);
+            return i;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return i;
         }
-
-        return i;
     }
 
     /*
