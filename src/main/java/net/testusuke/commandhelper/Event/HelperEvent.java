@@ -32,26 +32,29 @@ public class HelperEvent implements Listener {
         if(event.getView().getTitle().equalsIgnoreCase(plugin.prefix + "§e§lコマンド一覧")){
             event.setCancelled(true);
 
-            //  アイテムが黄緑色の羊毛か
-            if(item.getType() == Material.LIME_WOOL){
-                try {
-                    String command = item.getItemMeta().getDisplayName();
-                    player.sendMessage(plugin.prefix + "§aコマンドを実行します。command: " + command);
-                    //  コマンドの実行
-                    executeCommand(player, command);
+            try {
+                //  アイテムが黄緑色の羊毛か
+                if (item.getType() == Material.LIME_WOOL) {
+                    try {
+                        String command = item.getItemMeta().getDisplayName();
+                        //  コマンドの実行
+                        executeCommand(player, command);
+                        player.closeInventory();
+                    } catch (NullPointerException e) {
+                        //e.printStackTrace();
+                        player.sendMessage(plugin.prefix + "§c§l無効な選択です。Error: NullPointerException Where: ClickEvent");
+                    }
 
-                }catch (NullPointerException e){
-                    //e.printStackTrace();
-                    player.sendMessage(plugin.prefix + "§c§l無効な選択です。Error: NullPointerException Where: ClickEvent");
                 }
-
+            }catch (NullPointerException e){
+                return;
             }
 
             //  ページ
             if(item.getType() == Material.SUNFLOWER){
                 //  つぎのページ
                 if(item.getItemMeta().getDisplayName().equalsIgnoreCase("§e次のページ")){
-                    if(inventory.getItem(44).getType() == Material.AIR || inventory.getItem(44) == null){
+                    if(inventory.getItem(44) == null){
                         player.sendMessage(plugin.prefix + "§c次のページが存在しません。");
                         return;
                     }
@@ -81,30 +84,33 @@ public class HelperEvent implements Listener {
         if(event.getView().getTitle().equalsIgnoreCase(plugin.prefix + "§c§lコマンド削除用GUI")){
             event.setCancelled(true);
 
-            //  アイテムが黄緑色の羊毛か
-            if(item.getType() == Material.RED_WOOL){
-                try {
-                    String command = item.getItemMeta().getDisplayName();
-                    player.sendMessage(plugin.prefix + "§aコマンドを削除します。command: " + command);
-                    //  コマンドの削除
-                    //  id取得
-                    String id_before = item.getItemMeta().getLore().get(0);
-                    int id = Integer.parseInt(id_before);
+            try {
+                //  アイテムが黄緑色の羊毛か
+                if (item.getType() == Material.RED_WOOL) {
+                    try {
+                        String command = item.getItemMeta().getDisplayName();
+                        player.sendMessage(plugin.prefix + "§aコマンドを削除します。command: " + command);
+                        //  コマンドの削除
+                        //  id取得
+                        String id_before = item.getItemMeta().getLore().get(0);
+                        int id = Integer.parseInt(id_before);
+                        plugin.commandListData.removerCommand(player, id);
 
-                    plugin.commandListData.removerCommand(player, id);
+                    } catch (NullPointerException e) {
+                        //e.printStackTrace();
+                        player.sendMessage(plugin.prefix + "§c§l無効な選択です。Error: NullPointerException Where: ClickEvent");
+                    }
 
-                }catch (NullPointerException e){
-                    //e.printStackTrace();
-                    player.sendMessage(plugin.prefix + "§c§l無効な選択です。Error: NullPointerException Where: ClickEvent");
                 }
-
+            }catch (NullPointerException e){
+                return;
             }
 
             //  ページ
             if(item.getType() == Material.SUNFLOWER){
                 //  つぎのページ
                 if(item.getItemMeta().getDisplayName().equalsIgnoreCase("§e次のページ")){
-                    if(inventory.getItem(44).getType() == Material.AIR || inventory.getItem(44) == null){
+                    if(inventory.getItem(44) == null){
                         player.sendMessage(plugin.prefix + "§c次のページが存在しません。");
                         return;
                     }
@@ -134,9 +140,12 @@ public class HelperEvent implements Listener {
 
         ItemStack item_49 = inventory.getItem(49);
         if(item_49.getType() == Material.BOOK){
-            String name = item_49.getItemMeta().getDisplayName();
-            String page = name.replace("§aページ： ", "");
-            i = Integer.getInteger(page);
+            try {
+                String page = item_49.getItemMeta().getLore().get(0);
+                i = Integer.getInteger(page);
+            }catch (NullPointerException e) {
+                return i;
+            }
         }
 
         return i;

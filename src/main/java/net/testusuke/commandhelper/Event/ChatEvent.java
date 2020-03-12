@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class ChatEvent implements Listener {
 
@@ -30,8 +31,14 @@ public class ChatEvent implements Listener {
 
         boolean mode = plugin.addCommandPlayer.get(player);
         if(mode){
-            //  DB
-            plugin.commandListData.addCommand(player,command);
+            //  追加
+            new BukkitRunnable(){
+                @Override
+                public void run(){
+                    plugin.commandListData.addCommand(player,command);
+                }
+            }.runTaskAsynchronously(plugin);
+            //plugin.commandListData.addCommand(player,command);
             plugin.cl.removeMode(player);
 
             event.setCancelled(true);

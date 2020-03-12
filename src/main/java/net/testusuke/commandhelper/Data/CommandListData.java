@@ -4,6 +4,7 @@ import net.testusuke.commandhelper.CommandHelper;
 import net.testusuke.commandhelper.Manager.MySQLManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -81,7 +82,7 @@ public class CommandListData {
         return b;
     }
 
-    public void addCommand(Player player, String command) {
+    public synchronized void addCommand(Player player, String command) {
         TreeMap<Integer, String> commandMap = getCommandMap(player);
         //  仮想のIDを発行してcommandMapにputする(Keyの最後尾から i++; する)
         //  最後尾の値の取得
@@ -89,6 +90,21 @@ public class CommandListData {
         ArrayList<Integer> list = new ArrayList<>();
         for(Integer id : commandMap.keySet()){
             list.add(id);
+        }
+
+        if(list.size() <= 0){
+            //  仮想IDの発行
+            int id = 1;
+
+            //  Mapへ追加<仮想ID, Command>
+            commandMap.put(id,command);
+            //  PlayerCommandMapに追加
+            setCommandMap(player,commandMap);
+
+            //  PlayerAddCommandMapへの追加
+            addPlayerAddCommandList(player,command);
+            player.sendMessage(plugin.prefix + "§aコマンドを追加しました。command: " + command);
+            return;
         }
         int index = list.size();
         index--;    //  listは0,1,2,3...なので -1
@@ -104,10 +120,15 @@ public class CommandListData {
         //  PlayerAddCommandMapへの追加
         addPlayerAddCommandList(player,command);
 
+        player.sendMessage(plugin.prefix + "§aコマンドを追加しました。command: " + command);
     }
 
     public void removerCommand(Player player, Integer id){
         TreeMap<Integer, String > commandMap = getCommandMap(player);
+        if(!commandMap.containsKey(id)){
+            player.sendMessage(plugin.prefix + "§cコマンドが存在しません。");
+            return;
+        }
         //  commandMapからremoveする
         commandMap.remove(id);
         setCommandMap(player, commandMap);
@@ -292,74 +313,82 @@ public class CommandListData {
 
     //  プレイヤーのログイン時のCommandのロード
     public synchronized void loadCommandList(Player player){
-        if(!containsCommandMap(player)){
-            createCommandMap(player);
-        }else {
-            getCommandMap(player).clear();
-        }
-        TreeMap<Integer,String> commandMap = getCommandMap(player);
-        //DB
-        String uuid = player.getUniqueId().toString();
-        String sql = "SELECT id,command FROM cmdhelper_list WHERE uuid='" + uuid + "';";
-        ResultSet rs = mysql.query(sql);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!containsCommandMap(player)) {
+                    createCommandMap(player);
+                } else {
+                    getCommandMap(player).clear();
+                }
 
-        try {
-            if (!rs.next()) {
-                setCommandMap(player,commandMap);
+                TreeMap<Integer, String> commandMap = getCommandMap(player);
+                //DB
+                String uuid = player.getUniqueId().toString();
+                String sql = "SELECT id,command FROM cmdhelper_list WHERE uuid='" + uuid + "';";
+                ResultSet rs = mysql.query(sql);
+
+                try {
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        String command = rs.getString("command");
+                        commandMap.put(id, command);
+                    }
+                    //  DB後片付け
+                    rs.close();
+                    mysql.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                Bukkit.getLogger().info("Load CommandMap. Player: " + player.getName());
             }
-
-            while(rs.next()){
-                int id = rs.getInt("id");
-                String command = rs.getString("command");
-                commandMap.put(id, command);
-            }
-            setCommandMap(player,commandMap);
-            //  DB後片付け
-            rs.close();
-            mysql.close();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
-        Bukkit.getLogger().info("Load CommandMap. Player: " + player.getName());
+        }.runTaskAsynchronously(plugin);
     }
 
     //  プレイヤーログアウト時のコマンドリスト更新適応
     public synchronized void writeCommandList(Player player){
-        if(getPlayerAddCommandList(player) == null || getPlayerAddCommandList(player).size() <= 0 || getPlayerRemoveCommandList(player) == null || getPlayerRemoveCommandList(player).size() <= 0){
+        if(getPlayerAddCommandList(player) == null && getPlayerRemoveCommandList(player) == null){
             removeCommandMap(player);
             removePlayerAddCommandList(player);
             removePlayerRemoveCommandList(player);
             Bukkit.getLogger().info("Nothing to write to DB. Player: " + player.getName());
             return;
         }
-        //  PlayerAddCommandList
-        if(getPlayerAddCommandList(player) != null || getPlayerAddCommandList(player).size() > 0){
-            ArrayList<String> list = getPlayerAddCommandList(player);
-            String uuid = player.getUniqueId().toString();
-            for(String command : list){
-                String sql = "INSERT INTO cmdhelper_list (uuid,name,command) VALUES ('" + uuid +  "','" + player.getName() + "','" + command + "'); ";
-                mysql.execute(sql);
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                //  PlayerAddCommandList
+                if(getPlayerAddCommandList(player) != null && getPlayerAddCommandList(player).size() > 0){
+                    ArrayList<String> list = getPlayerAddCommandList(player);
+                    String uuid = player.getUniqueId().toString();
+                    for(String command : list){
+                        String sql = "INSERT INTO cmdhelper_list (uuid,name,command) VALUES ('" + uuid +  "','" + player.getName() + "','" + command + "'); ";
+                        mysql.execute(sql);
+                    }
+
+                    removePlayerAddCommandList(player);
+                }
+                //  PlayerRemoveCommandList
+                if(getPlayerRemoveCommandList(player) != null && getPlayerRemoveCommandList(player).size() > 0){
+                    ArrayList<Integer> list = getPlayerRemoveCommandList(player);
+                    String uuid = player.getUniqueId().toString();
+                    for(int id : list){
+                        String sql = "DELETE FROM cmdhelper_list WHERE id = '" + id +"' AND uuid='" + uuid + "';";
+                        mysql.execute(sql);
+                    }
+
+                    removePlayerRemoveCommandList(player);
+                }
+
+                //  CommandMap片付け
+                removeCommandMap(player);
+
+                Bukkit.getLogger().info("Write CommandMap. Player: " + player.getName());
             }
+        }.runTaskAsynchronously(plugin);
 
-            removePlayerAddCommandList(player);
-        }
-        //  PlayerRemoveCommandList
-        if(getPlayerRemoveCommandList(player) == null || getPlayerRemoveCommandList(player).size() > 0){
-            ArrayList<Integer> list = new ArrayList<>();
-            String uuid = player.getUniqueId().toString();
-            for(int id : list){
-                String sql = "DELETE FROM cmdhelper_list WHERE id = '" + id +  "' AND uuid = '" + uuid + "';";
-                mysql.execute(sql);
-            }
-
-            removePlayerRemoveCommandList(player);
-        }
-
-        //  CommandMap片付け
-        removeCommandMap(player);
-
-        Bukkit.getLogger().info("Write CommandMap. Player: " + player.getName());
     }
 
 

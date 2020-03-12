@@ -40,7 +40,6 @@ public class OpenGui {
                 String command = map.get(id);
                 ItemStack item = createItemAboutAdd(command, id);
                 inv.setItem(count - index, item);
-
                 if(count >=44){
                     break;
                 }
@@ -63,9 +62,12 @@ public class OpenGui {
         //  ページ数
         ItemStack item_pageIndex = new ItemStack(Material.BOOK);
         ItemMeta meta_pageIndex = item_pageIndex.getItemMeta();
-        meta_pageIndex.setDisplayName("§aページ： " + page);
+        meta_pageIndex.setDisplayName("§aページ数");
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add("" + page);
+        meta_pageIndex.setLore(lore);
         item_pageIndex.setItemMeta(meta_pageIndex);
-        inv.setItem(49, item_nextPage);
+        inv.setItem(49, item_pageIndex);
 
         player.openInventory(inv);
 
@@ -128,9 +130,12 @@ public class OpenGui {
         //  ページ数
         ItemStack item_pageIndex = new ItemStack(Material.BOOK);
         ItemMeta meta_pageIndex = item_pageIndex.getItemMeta();
-        meta_pageIndex.setDisplayName("§aページ： " + page);
+        meta_pageIndex.setDisplayName("§aページ数");
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add("" + page);
+        meta_pageIndex.setLore(lore);
         item_pageIndex.setItemMeta(meta_pageIndex);
-        inv.setItem(49, item_nextPage);
+        inv.setItem(49, item_pageIndex);
 
         player.openInventory(inv);
     }
