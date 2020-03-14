@@ -2,11 +2,9 @@ package net.testusuke.commandhelper;
 
 import net.testusuke.commandhelper.Command.HelperCommand;
 import net.testusuke.commandhelper.Data.CommandListData;
-import net.testusuke.commandhelper.Event.ChatEvent;
 import net.testusuke.commandhelper.Event.HelperEvent;
 import net.testusuke.commandhelper.Event.PlayerEvent;
 import net.testusuke.commandhelper.Manager.MySQLManager;
-import net.testusuke.commandhelper.Module.CommandList;
 import net.testusuke.commandhelper.Module.OpenGui;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -42,9 +40,6 @@ public final class CommandHelper extends JavaPlugin {
     //  CommandPlayer add
     public HashMap<Player,Boolean> addCommandPlayer = new HashMap<>();
 
-    //  CommandListClass    //  コマンドの実行
-    public CommandList cl = null;
-
     ///////////////////////
     //  コマンド系変数   //
     ///////////////////////
@@ -74,23 +69,17 @@ public final class CommandHelper extends JavaPlugin {
         getCommand("cmdhelp").setExecutor(new HelperCommand(this));
         //  Event
         getServer().getPluginManager().registerEvents(new HelperEvent(this), this);
-        getServer().getPluginManager().registerEvents(new ChatEvent(this), this);
         getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
-
         //  loadPrefix
         loadPrefix();
-
         //  MySQL
         mysql = new MySQLManager(this,"CommandHelper");
         mysql.debugMode = true;
         //  CreateTable
         createTable();
-
         //  Class
-        cl = new CommandList(this);
         openGui = new OpenGui(this);
         commandListData = new CommandListData(this);
-
         //  コマンドリストのロード
         commandListData.loadCommandListWhenOnEnable();
 
@@ -101,9 +90,6 @@ public final class CommandHelper extends JavaPlugin {
         // Plugin shutdown logic
         //  Logger
         getLogger().info("onDisable");
-
-        //  Remove All Player Mode
-        cl.removeAllPlayerMode();
         //  コマンドリスト更新の適応
         commandListData.writeCommandListWhenOnDisable();
 

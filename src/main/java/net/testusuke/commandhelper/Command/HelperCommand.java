@@ -61,9 +61,6 @@ public class HelperCommand implements CommandExecutor {
             }
 
             plugin.commandListData.addCommand(player, commands);
-
-            //prepareAddCommand(player);
-            //player.sendMessage(plugin.prefix + "§e追加したいコマンドを[ / ]を付けないで入力してください。");
             return true;
         }
 
@@ -80,10 +77,6 @@ public class HelperCommand implements CommandExecutor {
         player.sendMessage("§e/cmdhelp remove <-コマンド削除用のGUIを開きます。");
         player.sendMessage("§d§lCreated by testusuke Version: " + plugin.version);
         player.sendMessage("§e§l===================================");
-    }
-
-    private void prepareAddCommand(Player player){
-        plugin.cl.setMode(player, true);
     }
 
     private String getCommandFromStrings(String[] command){

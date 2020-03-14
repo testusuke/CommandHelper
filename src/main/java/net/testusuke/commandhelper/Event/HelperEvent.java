@@ -158,34 +158,6 @@ public class HelperEvent implements Listener {
         }
     }
 
-    /*
-    private int getLastIndex(Inventory inventory){
-        int index;
-        ItemStack item = inventory.getItem(44);
-        if(item == null){
-            return 0;
-        }
-        List<String> list = item.getItemMeta().getLore();
-        String s = list.get(0);
-        index = Integer.getInteger(s);
-
-        return index;
-    }
-
-    private int getFirstIndex(Inventory inventory){
-        int index;
-        ItemStack item = inventory.getItem(0);
-        if(item == null){
-            return 0;
-        }
-        List<String> list = item.getItemMeta().getLore();
-        String s = list.get(0);
-        index = Integer.getInteger(s);
-
-        return index;
-    }
-    */
-
     private void executeCommand(Player player, String command){
 
         //  execute
