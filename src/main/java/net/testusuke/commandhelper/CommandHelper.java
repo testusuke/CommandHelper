@@ -3,7 +3,6 @@ package net.testusuke.commandhelper;
 import net.testusuke.commandhelper.Command.HelperCommand;
 import net.testusuke.commandhelper.Data.CommandListData;
 import net.testusuke.commandhelper.Event.HelperEvent;
-import net.testusuke.commandhelper.Event.PlayerEvent;
 import net.testusuke.commandhelper.Manager.MySQLManager;
 import net.testusuke.commandhelper.Module.OpenGui;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -69,7 +68,6 @@ public final class CommandHelper extends JavaPlugin {
         getCommand("cmdhelp").setExecutor(new HelperCommand(this));
         //  Event
         getServer().getPluginManager().registerEvents(new HelperEvent(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
         //  loadPrefix
         loadPrefix();
         //  MySQL
