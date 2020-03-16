@@ -123,7 +123,7 @@ public class CommandListData {
         player.sendMessage(plugin.prefix + "§aコマンドを追加しました。command: " + command);
     }
 
-    public void removerCommand(Player player, Integer id){
+    public void removeCommand(Player player, Integer id){
         TreeMap<Integer, String > commandMap = getCommandMap(player);
         if(!commandMap.containsKey(id)){
             player.sendMessage(plugin.prefix + "§cコマンドが存在しません。");
@@ -392,4 +392,98 @@ public class CommandListData {
     }
 
 
+    /////////////////////////////
+    //  OP用のプレイヤー情報   //
+    /////////////////////////////
+    //  checkChangeMCID
+    public synchronized void  checkChangeMCID(Player player){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                String uuid = player.getUniqueId().toString();
+                String select_sql = "SELECT name FROM cmdhelper_list WHERE uuid='" + uuid + "' LIMIT 1;";
+                ResultSet rs = mysql.query(select_sql);
+                try {
+                    if (!rs.next()) {
+                        return;
+                    }
+                    String old_name = null;
+                    while (rs.next()){
+                        old_name = rs.getString("name");
+                    }
+                    if(old_name == null){
+                        return;
+                    }
+                    if(old_name.equalsIgnoreCase(player.getName())){
+                        String sql = "UPDATE cmdhelper_list SET name='" + player.getName() + "' WHERE uuid='" + uuid + "';";
+                        mysql.execute(sql);
+
+                        return;
+                    }
+                    mysql.close();
+                }catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+
+        }.runTaskAsynchronously(plugin);
+    }
+
+    /**
+     * if you use this method,you have to run Task.
+     * @param mcid
+     * @return uuid
+     */
+    //  getUUIDFromMCID
+    public synchronized String getUUIDFromMCID(String mcid){
+        String uuid = null;
+        String sql = "SELECT uuid FROM cmdhelper_list WHERE name='" + mcid + "' LIMIT 1;";
+        ResultSet rs = mysql.query(sql);
+        try{
+            if(!rs.next()){
+                return null;
+            }
+            while (rs.next()){
+                uuid = rs.getString("uuid");
+            }
+
+            return uuid;
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return uuid;
+    }
+
+    //  getCommandList
+    public TreeMap<Integer,String > getCommandMapAboutOffLinePlayer(String target){
+        TreeMap<Integer, String> commandMap = new TreeMap<>();
+        //DB
+        String sql = "SELECT id,command FROM cmdhelper_list WHERE name='" + target + "';";
+        ResultSet rs = mysql.query(sql);
+
+        try {
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String command = rs.getString("command");
+                commandMap.put(id, command);
+            }
+            //  DB後片付け
+            rs.close();
+            mysql.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return commandMap;
+    }
+
+    public synchronized void removeCommandForAdmin(String target, int id){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                String sql = "DELETE FROM cmdhelper_list WHERE id = '" + id +"' AND name='" + target + "';";
+                mysql.execute(sql);
+            }
+        }.runTaskAsynchronously(plugin);
+    }
 }

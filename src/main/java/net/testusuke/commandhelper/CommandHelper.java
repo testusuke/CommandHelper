@@ -68,6 +68,7 @@ public final class CommandHelper extends JavaPlugin {
         getCommand("cmdhelp").setExecutor(new HelperCommand(this));
         //  Event
         getServer().getPluginManager().registerEvents(new HelperEvent(this), this);
+        getServer().getPluginManager().registerEvents(new AdminEvent(this), this);
         //  loadPrefix
         loadPrefix();
         //  MySQL

@@ -1,31 +1,23 @@
-package net.testusuke.commandhelper.Event;
+package net.testusuke.commandhelper;
 
-import net.testusuke.commandhelper.CommandHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public class HelperEvent implements Listener {
+public class AdminEvent implements Listener {
 
     private final CommandHelper plugin;
-
-    public HelperEvent(CommandHelper plugin) {
+    public AdminEvent(CommandHelper plugin) {
         this.plugin = plugin;
     }
-
-    //////////////
-    //  Event   //
-    //////////////
 
     //  onClickEvent
     @EventHandler
@@ -34,8 +26,9 @@ public class HelperEvent implements Listener {
         ItemStack item = event.getCurrentItem();
         Inventory inventory = event.getInventory();
 
-        if(event.getView().getTitle().equalsIgnoreCase(plugin.prefix + "§e§lコマンド一覧")){
+        if(event.getView().getTitle().equalsIgnoreCase(plugin.prefix + "§e§lコマンド一覧　ADMIN")){
             event.setCancelled(true);
+            String target = inventory.getItem(48).getItemMeta().getDisplayName();
 
             try {
                 //  アイテムが黄緑色の羊毛か
@@ -66,7 +59,7 @@ public class HelperEvent implements Listener {
                     player.sendMessage(plugin.prefix + "§a次のページを開きます。");
                     int page = getPage(inventory);
                     page++;
-                    plugin.openGui.OpenGui(player, page);
+                    plugin.openGui.OpenGuiForAdmin(player, target, page);
 
                 }
                 //  前のページ
@@ -76,7 +69,7 @@ public class HelperEvent implements Listener {
                         return;
                     }
                     page--;
-                    plugin.openGui.OpenGui(player,page);
+                    plugin.openGui.OpenGuiForAdmin(player, target, page);
                 }
             }
 
@@ -86,8 +79,9 @@ public class HelperEvent implements Listener {
         ////////////////////////////////////////////////
         //  コマンド削除用GUI
         ////////////////////////////////////////////////
-        if(event.getView().getTitle().equalsIgnoreCase(plugin.prefix + "§c§lコマンド削除用GUI")){
+        if(event.getView().getTitle().equalsIgnoreCase(plugin.prefix + "§c§lコマンド削除用GUI ADMIN")){
             event.setCancelled(true);
+            String target = inventory.getItem(48).getItemMeta().getDisplayName();
 
             try {
                 //  アイテムが黄緑色の羊毛か
@@ -99,7 +93,7 @@ public class HelperEvent implements Listener {
                         //  id取得
                         String id_before = item.getItemMeta().getLore().get(0);
                         int id = Integer.parseInt(id_before);
-                        plugin.commandListData.removeCommand(player, id);
+                        plugin.commandListData.removeCommandForAdmin(target, id);
 
                     } catch (NullPointerException e) {
                         //e.printStackTrace();
@@ -122,7 +116,8 @@ public class HelperEvent implements Listener {
                     player.sendMessage(plugin.prefix + "§a次のページを開きます。");
                     int page = getPage(inventory);
                     page++;
-                    plugin.openGui.OpenRemoveGui(player, page);
+                    player.closeInventory();
+                    plugin.openGui.OpenRemoveGuiForAdmin(player, target, page);
 
                 }
                 //  前のページ
@@ -132,7 +127,8 @@ public class HelperEvent implements Listener {
                         return;
                     }
                     page--;
-                    plugin.openGui.OpenRemoveGui(player,page);
+                    player.closeInventory();
+                    plugin.openGui.OpenRemoveGuiForAdmin(player, target, page);
                 }
             }
 
@@ -160,26 +156,5 @@ public class HelperEvent implements Listener {
 
         //  execute
         Bukkit.dispatchCommand(player, command);
-    }
-
-    //////////////////////////////////////////
-    //  プレイヤーのログイン、ログアウト    //
-    //////////////////////////////////////////
-    //  onJoin
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event){
-        Player player = event.getPlayer();
-        plugin.commandListData.loadCommandList(player);
-        player.sendMessage(plugin.prefix + "§a§lようこそ！あなたのコマンドリストを読み込みました。");
-
-        //  CheckChangeMCID
-        plugin.commandListData.checkChangeMCID(player);
-    }
-
-    //  onQuit
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event){
-        Player player = event.getPlayer();
-        plugin.commandListData.writeCommandList(player);
     }
 }

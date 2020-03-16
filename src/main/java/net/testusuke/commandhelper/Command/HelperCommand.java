@@ -51,6 +51,35 @@ public class HelperCommand implements CommandExecutor {
                 return true;
             }
         }
+
+        if(args.length == 2){
+            Player player = (Player)sender;
+
+            //////////////////
+            //  OPコマンド  //
+            //////////////////
+            if(args[0].equalsIgnoreCase("open")){
+                String name = args[1];
+                if(!player.isOp()){
+                    player.sendMessage(plugin.prefix + "§c§lあなたは権限を持っていません。");
+                    return false;
+                }
+                plugin.openGui.OpenGuiForAdmin(player, name,1);
+                return true;
+            }
+            if(args[0].equalsIgnoreCase("remove")){
+                String name = args[1];
+                if(!player.isOp()){
+                    player.sendMessage(plugin.prefix + "§c§lあなたは権限を持っていません。");
+                    return false;
+                }
+                plugin.openGui.OpenRemoveGuiForAdmin(player, name,1);
+                return true;
+            }
+
+
+        }
+
         if (args[0].equalsIgnoreCase("add")) {
             Player player = (Player)sender;
             //  追加
@@ -75,6 +104,10 @@ public class HelperCommand implements CommandExecutor {
         player.sendMessage("§e/cmdhelp help <-ヘルプの表示");
         player.sendMessage("§e/cmdhelp add (command) <-コマンドを追加する。§e§lコマンドの後に続けて追加したいコマンド§d§l[ / ]§e§lを入力してください");
         player.sendMessage("§e/cmdhelp remove <-コマンド削除用のGUIを開きます。");
+        if(player.isOp()){
+            player.sendMessage("§c/cmdhelp open <name> <- 指定したユーザのコマンドリストを表示します。");
+            player.sendMessage("§c/cmdhelp remove <name> <- 指定したユーザのコマンド削除用のGUIを開きます。");
+        }
         player.sendMessage("§d§lCreated by testusuke Version: " + plugin.version);
         player.sendMessage("§e§l===================================");
     }
