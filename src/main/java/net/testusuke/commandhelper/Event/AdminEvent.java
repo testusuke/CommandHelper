@@ -1,5 +1,6 @@
-package net.testusuke.commandhelper;
+package net.testusuke.commandhelper.Event;
 
+import net.testusuke.commandhelper.CommandHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

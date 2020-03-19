@@ -2,6 +2,7 @@ package net.testusuke.commandhelper;
 
 import net.testusuke.commandhelper.Command.HelperCommand;
 import net.testusuke.commandhelper.Data.CommandListData;
+import net.testusuke.commandhelper.Event.AdminEvent;
 import net.testusuke.commandhelper.Event.HelperEvent;
 import net.testusuke.commandhelper.Manager.MySQLManager;
 import net.testusuke.commandhelper.Module.OpenGui;
